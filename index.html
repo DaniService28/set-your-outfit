@@ -3,10 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="./src/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>set-your-outfit</title>
+    <!-- Use module, to enable ES6 imports/exports from other files -->
+    <script src="./src/script/data.js" type="module" defer></script>
+    <script src="./src/script/render.js" type="module" defer></script>
+    <script src="./src/script/storage.js" type="module" defer></script>
+    <script src="./src/script/auth.js" type="module" defer></script>
+    <script src="./src/script/main.js" type="module" defer></script>
   </head>
   <body>
-    
+      <header id="header">
+        <div id="logo">Outfit Store</div>
+
+        <div id="search-container">
+          <input type="text" id="search-input" placeholder="Search outfits, shoes, etc.">
+          <button id="search-btn">Search</button>
+        </div>
+        <nav id="main-nav">
+          <button data-route="home">Home</button>
+          <button data-route="men">Men</button>
+          <button data-route="women">Women</button>
+          <button id="cart-btn">
+            Cart (<span id="cart-count">0</span>)
+          </button>
+          <button id="login-btn">Log in</button>
+        </nav>
+      </header>
+      <main id="main">
+        <!-- JS will render promotions, products, etc. -->
+      </main>
+
+      <footer id="footer"></footer>
+
+      <!-- Modal for login/signup -->
+      <div id="auth-modal" class="modal hidden"></div>
+
+      <!-- Modal for product detail -->
+      <div id="product-modal" class="modal hidden"></div>
+
+
+      
   </body>
 </html>
