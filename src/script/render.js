@@ -35,15 +35,15 @@ export async function renderHomeView(products) {
 
   // HERO BANNER
   main.innerHTML += `
-    <section class="hero" style="background-image: url('./src/assets/home-hero.jpg');">
+    <section class="hero fade-in-up" style="background-image: url('./src/assets/home-hero.jpg');">
       <h1>Find Your Style</h1>
     </section>
   `;
 
   // CATEGORY GRID
   main.innerHTML += `
-    <h2>Shop by Category</h2>
-    <div class="category-grid">
+    <h2 class="fade-in-up">Shop by Category</h2>
+    <div class="category-grid fade-in-up">
       <div class="category-card" data-route="men" style="background-image:url('./src/assets/men-category.jpg');">
         <span>Men</span>
       </div>
@@ -60,7 +60,7 @@ export async function renderHomeView(products) {
   `;
 
   // PRODUCT GRID
-  main.innerHTML += `<h2>Popular Picks</h2>`;
+  main.innerHTML += `<h2 class="fade-in-up">Popular Picks</h2>`;
   const grid = document.createElement("div");
   grid.classList.add("home-product-grid");
 
