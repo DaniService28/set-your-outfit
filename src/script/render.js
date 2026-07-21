@@ -1,11 +1,13 @@
 import { getProductById } from "./data.js";
+import { addToCart, showToast, removeFromCart, getCart, updateCartCount } from "./cart.js";
+import { openCheckoutModal, closeCheckoutModal, setupCheckoutForm } from "./main.js";
 
 export function clearMain() {
   const main = document.getElementById("main");
   main.innerHTML = "";
 }
 
-// render a card
+// Render a product card
 export function renderProductCard(product) {
   return `
     <div class="product-card" data-id="${product.id}">
@@ -16,7 +18,7 @@ export function renderProductCard(product) {
   `;
 }
 
-// main banner
+// Main banner
 export function renderBanner() {
   return `
     <section class="banner">
@@ -26,100 +28,145 @@ export function renderBanner() {
   `;
 }
 
-// render main home
-export function renderHomeView(products) {
+// Render Home
+export async function renderHomeView(products) {
   clearMain();
   const main = document.getElementById("main");
 
-  // Banner
-  main.innerHTML += renderBanner();
+  // HERO BANNER
+  main.innerHTML += `
+    <section class="hero" style="background-image: url('./src/assets/home-hero.jpg');">
+      <h1>Find Your Style</h1>
+    </section>
+  `;
 
-  // Productos destacados
-  main.innerHTML += `<h2>Featured Products</h2>`;
+  // CATEGORY GRID
+  main.innerHTML += `
+    <h2>Shop by Category</h2>
+    <div class="category-grid">
+      <div class="category-card" data-route="men" style="background-image:url('./src/assets/men-category.jpg');">
+        <span>Men</span>
+      </div>
+      <div class="category-card" data-route="women" style="background-image:url('./src/assets/women-category.jpg');">
+        <span>Women</span>
+      </div>
+      <div class="category-card" data-route="shoes" style="background-image:url('./src/assets/shoes-category.jpg');">
+        <span>Shoes</span>
+      </div>
+      <div class="category-card" data-route="accessories" style="background-image:url('./src/assets/accessories-category.jpg');">
+        <span>Accessories</span>
+      </div>
+    </div>
+  `;
 
+  // PRODUCT GRID
+  main.innerHTML += `<h2>Popular Picks</h2>`;
   const grid = document.createElement("div");
-  grid.classList.add("product-grid");
+  grid.classList.add("home-product-grid");
 
   products.forEach(product => {
     grid.innerHTML += renderProductCard(product);
   });
 
   main.appendChild(grid);
+
+  // Category click listeners
+  document.querySelectorAll(".category-card").forEach(card => {
+    card.addEventListener("click", async () => {
+      const route = card.dataset.route;
+
+      if (route === "men") {
+        const data = await getAllMenProducts();
+        renderMenView(data);
+      } else if (route === "women") {
+        const data = await getAllWomenProducts();
+        renderWomenView(data);
+      } else if (route === "shoes") {
+        const shoes = await getProductsByCategory("mens-shoes");
+        renderHomeView(shoes);
+      } else if (route === "accessories") {
+        const acc = await getProductsByCategory("mens-watches");
+        renderHomeView(acc);
+      }
+    });
+  });
+
+  // Product click listeners
+  grid.querySelectorAll(".product-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const id = card.dataset.id;
+      openProductModal(id);
+    });
+  });
 }
 
-// Renderiza la vista completa de Hombres
+
+// Render Men
 export function renderMenView(data) {
   clearMain();
   const main = document.getElementById("main");
 
-  main.innerHTML += `
-    <h1 class="page-title">Men's Collection</h1>
-  `;
+  main.innerHTML += `<h1 class="page-title">Men's Collection</h1>`;
 
   data.forEach(section => {
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("category-section");
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("category-section");
 
-  wrapper.innerHTML += `
-    <h2 class="category-title">${formatCategoryName(section.category)}</h2>
-  `;
+    wrapper.innerHTML += `
+      <h2 class="category-title">${formatCategoryName(section.category)}</h2>
+    `;
 
-  const grid = document.createElement("div");
-  grid.classList.add("product-grid");
+    const grid = document.createElement("div");
+    grid.classList.add("product-grid");
 
-  section.products.forEach(product => {
-    grid.innerHTML += renderProductCard(product);
-  });
+    section.products.forEach(product => {
+      grid.innerHTML += renderProductCard(product);
+    });
 
-  
-    // Add event listener to each product card to open the modal when clicked   
-  grid.querySelectorAll(".product-card").forEach(card => {
-    card.addEventListener("click", () => {
+    grid.querySelectorAll(".product-card").forEach(card => {
+      card.addEventListener("click", () => {
         const id = card.dataset.id;
         openProductModal(id);
-    });
+      });
     });
 
-  wrapper.appendChild(grid);
-  main.appendChild(wrapper);
-});
+    wrapper.appendChild(grid);
+    main.appendChild(wrapper);
+  });
 }
 
-// Renderiza la vista completa de Mujeres
+// Render Women
 export function renderWomenView(data) {
   clearMain();
   const main = document.getElementById("main");
 
-  main.innerHTML += `
-    <h1 class="page-title">Women's Collection</h1>
-  `;
+  main.innerHTML += `<h1 class="page-title">Women's Collection</h1>`;
 
   data.forEach(section => {
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("category-section");
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("category-section");
 
-  wrapper.innerHTML += `
-    <h2 class="category-title">${formatCategoryName(section.category)}</h2>
-  `;
+    wrapper.innerHTML += `
+      <h2 class="category-title">${formatCategoryName(section.category)}</h2>
+    `;
 
-  const grid = document.createElement("div");
-  grid.classList.add("product-grid");
+    const grid = document.createElement("div");
+    grid.classList.add("product-grid");
 
-  section.products.forEach(product => {
-    grid.innerHTML += renderProductCard(product);
-  });
+    section.products.forEach(product => {
+      grid.innerHTML += renderProductCard(product);
+    });
 
-  // Add event listener to each product card to open the modal when clicked   
-  grid.querySelectorAll(".product-card").forEach(card => {
-    card.addEventListener("click", () => {
+    grid.querySelectorAll(".product-card").forEach(card => {
+      card.addEventListener("click", () => {
         const id = card.dataset.id;
         openProductModal(id);
-    });
+      });
     });
 
-  wrapper.appendChild(grid);
-  main.appendChild(wrapper);
-});
+    wrapper.appendChild(grid);
+    main.appendChild(wrapper);
+  });
 }
 
 function formatCategoryName(slug) {
@@ -128,9 +175,8 @@ function formatCategoryName(slug) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
-
+// Product modal
 export async function openProductModal(id) {
-    // Fetch product details by ID
   const modal = document.getElementById("product-modal");
   const product = await getProductById(id);
 
@@ -150,10 +196,73 @@ export async function openProductModal(id) {
   `;
 
   modal.classList.remove("hidden");
-    document.body.style.overflow = "hidden"; // 🚫 bloquea scroll
+  document.body.style.overflow = "hidden";
 
   document.getElementById("close-product-modal").addEventListener("click", () => {
     modal.classList.add("hidden");
-    document.body.style.overflow = ""; // ✅ restaura scroll
+    document.body.style.overflow = "";
+  });
+
+  document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+    addToCart(product);
+    showToast("Added to cart ✔️");
   });
 }
+
+// Cart view
+export function renderCartView(items) {
+  clearMain();
+  const main = document.getElementById("main");
+
+  main.innerHTML = `
+    <h1>Your Cart</h1>
+    <button id="checkout-btn" class="checkout-btn">Proceed to Checkout</button>
+  `;
+
+  // Open checkout modal
+  document.getElementById("checkout-btn").addEventListener("click", () => {
+    openCheckoutModal();
+    setupCheckoutForm();
+  });
+
+  if (items.length === 0) {
+    main.innerHTML += `<p>Your cart is empty.</p>`;
+    return;
+  }
+
+  const list = document.createElement("div");
+  list.classList.add("cart-list");
+
+  items.forEach(item => {
+    const cartItem = document.createElement("div");
+    cartItem.classList.add("cart-item");
+
+    cartItem.innerHTML = `
+      <img src="${item.thumbnail}" alt="${item.title}">
+      <div class="cart-info">
+        <h3>${item.title}</h3>
+        <p>$${item.price}</p>
+      </div>
+      <button class="remove-btn" data-id="${item.id}">🗑️</button>
+    `;
+
+    const removeBtn = cartItem.querySelector(".remove-btn");
+
+    removeBtn.addEventListener("click", () => {
+      const id = removeBtn.dataset.id;
+
+      removeFromCart(id);
+      cartItem.remove();
+
+      if (getCart().length === 0) {
+        renderCartView(getCart());
+      }
+    });
+
+    list.appendChild(cartItem);
+  });
+
+  main.appendChild(list);
+}
+
+

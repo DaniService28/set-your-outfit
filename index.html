@@ -10,17 +10,11 @@
     <script src="./src/script/data.js" type="module" defer></script>
     <script src="./src/script/render.js" type="module" defer></script>
     <script src="./src/script/storage.js" type="module" defer></script>
-    <script src="./src/script/auth.js" type="module" defer></script>
     <script src="./src/script/main.js" type="module" defer></script>
   </head>
   <body>
       <header id="header">
         <div id="logo">Outfit Store</div>
-
-        <div id="search-container">
-          <input type="text" id="search-input" placeholder="Search outfits, shoes, etc.">
-          <button id="search-btn">Search</button>
-        </div>
         <nav id="main-nav">
           <button data-route="home">Home</button>
           <button data-route="men">Men</button>
@@ -28,7 +22,6 @@
           <button id="cart-btn">
             Cart (<span id="cart-count">0</span>)
           </button>
-          <button id="login-btn">Log in</button>
         </nav>
       </header>
       <main id="main">
@@ -37,12 +30,48 @@
 
       <footer id="footer"></footer>
 
-      <!-- Modal for login/signup -->
-      <div id="auth-modal" class="modal hidden"></div>
-
       <!-- Modal for product detail -->
       <div id="product-modal" class="modal hidden"></div>
 
+      <!-- Toast notification -->
+      <div id="toast"></div>
+
+      <div id="checkout-modal" class="checkout-modal hidden">
+      <div class="checkout-content">
+        <button id="checkout-close" class="checkout-close">✖</button>
+
+        <h2>Checkout</h2>
+
+        <form id="checkout-form" class="checkout-form">
+          <label>
+            Full Name:
+            <input type="text" id="name" required>
+          </label>
+
+          <label>
+            Address:
+            <input type="text" id="address" required>
+          </label>
+
+          <label>
+            Phone Number:
+            <input type="tel" id="phone" required>
+          </label>
+
+          <label>
+            Email (optional):
+            <input type="email" id="email">
+          </label>
+
+          <label>
+            Notes (optional):
+            <textarea id="notes"></textarea>
+          </label>
+
+          <button type="submit" class="checkout-btn">Place Order</button>
+        </form>
+      </div>
+    </div>
 
       
   </body>
