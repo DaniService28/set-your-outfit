@@ -2,9 +2,6 @@
 // We are gonna use DummyJSON API to fetch products data
 // This is public API, so we don't need any authentication or API key
 
-//puedo usar data.ok y manejar al menos dos tipos de error y 404 error
-
-
 const API_URL = "https://dummyjson.com/products";
 
 /**
@@ -14,10 +11,18 @@ const API_URL = "https://dummyjson.com/products";
 export async function getProductsByCategory(category) {
   try {
     const res = await fetch(`${API_URL}/category/${category}`);
+
+    // Handle invalid responses (404, 500, etc.)
+    if (!res.ok) {
+      console.error(`Fetch error: API returned status ${res.status} for category ${category}`);
+      return []; // safe fallback
+    }
+
     const data = await res.json();
     return data.products;
   } catch (error) {
-    console.error("Error fetching category:", error);
+    // Handle network errors (no internet, server down)
+    console.error("Network error fetching category:", error);
     return [];
   }
 }
@@ -28,10 +33,16 @@ export async function getProductsByCategory(category) {
 export async function getProductById(id) {
   try {
     const res = await fetch(`${API_URL}/${id}`);
+
+    if (!res.ok) {
+      console.error(`Fetch error: API returned status ${res.status} for product ID ${id}`);
+      return null;
+    }
+
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("Network error fetching product:", error);
     return null;
   }
 }
@@ -42,19 +53,36 @@ export async function getProductById(id) {
 export async function searchProducts(query) {
   try {
     const res = await fetch(`${API_URL}/search?q=${query}`);
+
+    if (!res.ok) {
+      console.error(`Fetch error: API returned status ${res.status} for search query "${query}"`);
+      return [];
+    }
+
     const data = await res.json();
     return data.products;
   } catch (error) {
-    console.error("Error searching products:", error);
+    console.error("Network error searching products:", error);
     return [];
   }
 }
 
 // Get all categories to know what is coming from the API to populate the navigation menu
 export async function getAllCategories() {
-  const res = await fetch("https://dummyjson.com/products/categories");
-  const categories = await res.json();
-  return new Set(categories);
+  try {
+    const res = await fetch("https://dummyjson.com/products/categories");
+
+    if (!res.ok) {
+      console.error(`Fetch error: API returned status ${res.status} for categories`);
+      return new Set();
+    }
+
+    const categories = await res.json();
+    return new Set(categories);
+  } catch (error) {
+    console.error("Network error fetching categories:", error);
+    return new Set();
+  }
 }
 
 export const MEN_CATEGORIES = [
@@ -76,21 +104,20 @@ export const MEN_CATEGORIES = [
 ];
 
 export async function getAllMenProducts() {
-    // Fetch all products for each category in MEN_CATEGORIES and return an array 
-    // of objects with category and products
-    const results = [];
+  // Fetch all products for each category in MEN_CATEGORIES and return an array 
+  // of objects with category and products
+  const results = [];
 
-    for (const category of MEN_CATEGORIES) {
-        const products = await getProductsByCategory(category);
-        results.push({
-        category,
-        products
-        });
-    }
+  for (const category of MEN_CATEGORIES) {
+    const products = await getProductsByCategory(category);
+    results.push({
+      category,
+      products
+    });
+  }
 
-    return results;
+  return results;
 }
-
 
 export const WOMEN_CATEGORIES = [
   "womens-bags",
@@ -113,17 +140,17 @@ export const WOMEN_CATEGORIES = [
 ];
 
 export async function getAllWomenProducts() {
-    // Fetch all products for each category in WOMEN_CATEGORIES and return an array 
-    // of objects with category and products
-    const results = [];
+  // Fetch all products for each category in WOMEN_CATEGORIES and return an array 
+  // of objects with category and products
+  const results = [];
 
-    for (const category of WOMEN_CATEGORIES) {
-        const products = await getProductsByCategory(category);
-        results.push({
-        category,
-        products
-        });
-    }
+  for (const category of WOMEN_CATEGORIES) {
+    const products = await getProductsByCategory(category);
+    results.push({
+      category,
+      products
+    });
+  }
 
-    return results;
+  return results;
 }
