@@ -6,12 +6,14 @@
     <link rel="stylesheet" href="./src/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>set-your-outfit</title>
+
     <!-- Use module, to enable ES6 imports/exports from other files -->
     <script src="./src/script/data.js" type="module" defer></script>
     <script src="./src/script/render.js" type="module" defer></script>
     <script src="./src/script/storage.js" type="module" defer></script>
     <script src="./src/script/main.js" type="module" defer></script>
   </head>
+
   <body>
       <header id="header">
         <div id="logo">Outfit Store</div>
@@ -24,6 +26,7 @@
           </button>
         </nav>
       </header>
+
       <main id="main">
         <!-- JS will render promotions, products, etc. -->
       </main>
@@ -31,48 +34,66 @@
       <footer id="footer"></footer>
 
       <!-- Modal for product detail -->
-      <div id="product-modal" class="modal hidden"></div>
+      <div 
+        id="product-modal" 
+        class="modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Product details"
+      ></div>
 
       <!-- Toast notification -->
       <div id="toast"></div>
 
-      <div id="checkout-modal" class="checkout-modal hidden">
-      <div class="checkout-content">
-        <button id="checkout-close" class="checkout-close">✖</button>
+      <!-- Checkout modal -->
+      <div 
+        id="checkout-modal" 
+        class="checkout-modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="checkout-title"
+      >
+        <div class="checkout-content">
+          <button 
+            id="checkout-close" 
+            class="checkout-close"
+            aria-label="Close checkout form"
+          >
+            ✖
+          </button>
 
-        <h2>Checkout</h2>
+          <h2 id="checkout-title">Checkout</h2>
 
-        <form id="checkout-form" class="checkout-form">
-          <label>
-            Full Name:
-            <input type="text" id="name" required>
-          </label>
+          <form id="checkout-form" class="checkout-form">
+            <label>
+              Full Name:
+              <input type="text" id="name" required>
+            </label>
 
-          <label>
-            Address:
-            <input type="text" id="address" required>
-          </label>
+            <label>
+              Address:
+              <input type="text" id="address" required>
+            </label>
 
-          <label>
-            Phone Number:
-            <input type="tel" id="phone" required>
-          </label>
+            <label>
+              Phone Number:
+              <input type="tel" id="phone" required>
+            </label>
 
-          <label>
-            Email (optional):
-            <input type="email" id="email">
-          </label>
+            <label>
+              Email (optional):
+              <input type="email" id="email">
+            </label>
 
-          <label>
-            Notes (optional):
-            <textarea id="notes"></textarea>
-          </label>
+            <label>
+              Notes (optional):
+              <textarea id="notes"></textarea>
+            </label>
 
-          <button type="submit" class="checkout-btn">Place Order</button>
-        </form>
+            <button type="submit" class="checkout-btn">Place Order</button>
+          </form>
+        </div>
       </div>
-    </div>
 
-      
   </body>
 </html>

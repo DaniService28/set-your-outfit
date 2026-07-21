@@ -1,7 +1,9 @@
 // Siempre leer el carrito desde localStorage
 export function getCart() {
-  return JSON.parse(localStorage.getItem("cart")) || [];
+  const stored = localStorage.getItem("cart");
+  return stored ? JSON.parse(stored) : [];
 }
+
 
 // Guardar carrito en localStorage
 export function saveCart(cart) {
