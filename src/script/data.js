@@ -2,6 +2,9 @@
 // We are gonna use DummyJSON API to fetch products data
 // This is public API, so we don't need any authentication or API key
 
+//puedo usar data.ok y manejar al menos dos tipos de error y 404 error
+
+
 const API_URL = "https://dummyjson.com/products";
 
 /**
